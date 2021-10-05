@@ -1,70 +1,121 @@
-print('Welcome to python.hub Bank ATM')
-restart = 'Y'
-chances = 3
-balance = 999.12
+import random
 
-while chances >= 0:
-    pin = int(input("Please Enter Your 4 Digit Pin: "))
-    if pin == (1234):
-        print('You entered your pin Correctly')
-       
+class Account:
+    # Construct an Account object
+    def __init__(self, id, balance=0, annualInterestRate=3.4):
+        self.id = id
+        self.balance = balance
+        self.annualInterestRate = annualInterestRate
 
-        while restart not in ('n', 'NO', 'no', 'N'):
-            print('Please Press 1 For Your Balance')
-            print('Please Press 2 To Make a withdrawl')
-            print('Please Press 3 To Pay in')
-            print('Please Press 4 To Return Card')
+    def getId(self):
+        return self.id
 
-            option = int(input('What would you like to choose?: '))
-            if option == 1:
-                print('Your Balance is $', balance)
-                restart = input('Would you like to go back? ')
-                if restart in ('n', 'NO', 'no', 'N'):
-                    print('Thank You')
-                    #break
-                #The Second Option
-            elif option == 2:
-                option = ('y')
-                withdrawl = float(input('How Much would you like to withdraw? 10,20,40,60,80,100 for other enter 1: '
-                                        ''))
-                if withdrawl in [10, 20, 40.60, 80, 100]:
-                    balance = balance - withdrawl
-                    print("\nYour Balance is now $", balance)
-                    restart = input('Would You like to go back? ')
-                    if restart in ('n', 'NO', 'no', 'N'):
-                        print('Thank You')
-                        #break
+    def getBalance(self):
+        return self.balance
 
-                    elif withdrawl != [10, 20, 40.60, 80, 100]:
-                        print('Invalid Amount, Please Re-try\n')
-                        restart = ('y')
-                    elif withdrawl == 1:
-                        withdrawl = float(input('Please Enter desired amount: '))
+    def getAnnualInterestRate(self):
+        return self.annualInterestRate
 
-                    #The Third Option.
-            elif option == 3:
-                Pay_in = float(input('Hom Much Would You Like To Pay In? '))
-                balance = balance + Pay_in
-                print('\nYour Balance is now $', balance)
-                restart = input('Would you like to go back? ')
-                if restart in ('n', 'NO', 'no', 'N'):
-                    print('Thank You')
-                    #break
+    def getMonthlyInterestRate(self):
+        return self.annualInterestRate / 12
 
-                    #The Fourth Option.
+    def withdraw(self, amount):
+        self.balance -= amount
 
-            elif option == 4:
-                print('Please wait while your card is Returned...\n')
-                print('Thank you for your service.')
-                #break
+    def deposit(self, amount):
+        self.balance += amount
 
-            else:
-                print("Please Enter a correct number.\n")
-                restart = ('y')
+    def getMonthlyInterest(self):
+        return self.balance * self.getMonthlyInterestRate()
 
-    elif pin != ('1234'):
-        print('Incorrect password')
-        chances = chances - 1
-        if chances == 0:
-            print('\nNo more tries')
-            #break
+def main():
+        # Creating accounts
+        accounts = []
+        for i in range(1000, 9999):
+            account = Account(i, 0)
+            accounts.append(account)
+
+        # ATM Processes
+        while True:
+
+            # Reading id from user
+            id = int(input("\nEnter account pin: "))
+
+            # Loop till id is valid
+            while id < 1000 or id > 9999:
+                id = int(input("\nInvalid Id.. Re-enter: "))
+
+            # Iterating over account session
+            while True:
+
+                # Printing menu
+                print("\n1 - View Balance \t 2 - Withdraw \t 3 - Deposit \t 4 - Exit ")
+
+                # Reading selection
+                selection = int(input("\nEnter your selection: "))
+
+                # Getting account object
+                for acc in accounts:
+                    # Comparing account id
+                    if acc.getId() == id:
+                        accountObj = acc
+                        break
+
+                # View Balance
+                if selection == 1:
+                    # Printing balance
+                    print(accountObj.getBalance())
+
+                # Withdraw
+                elif selection == 2:
+                    # Reading amount
+                    amt = float(input("\nEnter amount to withdraw: "))
+                    ver_withdraw = input("Is this the correct amount, yes or no ? " + str(amt) + " ")
+
+                    if ver_withdraw == "yes":
+                        print("Verify withdraw")
+                    else:
+                        break
+
+                    if amt < accountObj.getBalance():
+                        # Calling withdraw method
+                        accountObj.withdraw(amt)
+                        # Printing updated balance
+                        print("\nUpdated Balance: " + str(accountObj.getBalance()) + " n")
+                    else:
+                        print("\nYou're balance is less than withdrawl amount: " + str(
+                        accountObj.getBalance()) + " n")
+                        print("\nPlease make a deposit.")
+
+                # Deposit
+                elif selection == 3:
+                        # Reading amount
+                        amt = float(input("\nEnter amount to deposit: "))
+                        ver_deposit = input("Is this the correct amount, yes, or no ? " + str(amt) + " ")
+
+                        if ver_deposit == "yes":
+                            # Calling deposit method
+                            accountObj.deposit(amt)
+                            # Printing updated balance
+                            print("\nUpdated Balance: " + str(accountObj.getBalance()) + " n")
+                        else:
+                            break
+
+                elif selection == 4:
+                    print("\nTransaction is now complete.")
+                    print("________________________________________")
+                    print("Transaction number: ", random.randint(10000, 1000000))
+                    print("________________________________________")
+                    print("Current Interest Rate: ", accountObj.annualInterestRate)
+                    print("________________________________________")
+                    print("Monthly Interest Rate: ", accountObj.annualInterestRate / 12)
+                    print("________________________________________")
+                    print("Thanks for choosing us as your bank.")
+                    exit()
+
+                # Any other choice
+                else:
+                    print("\nThat's an invalid choice.")
+
+    #Main function
+main()
