@@ -37,11 +37,14 @@ def main():
 
         # ATM Processes
         while True:
+            try:
+                # Reading id from user
+                id = int(input("\nEnter account pin: "))
+            except ValueError:
+                print("Please enter an Integer Value.")
+                continue
 
-            # Reading id from user
-            id = int(input("\nEnter account pin: "))
-
-            # Loop till id is valid
+            # Loop still id is valid
             while id < 1000 or id > 9999:
                 id = int(input("\nInvalid Id.. Re-enter: "))
 
@@ -50,9 +53,12 @@ def main():
 
                 # Printing menu
                 print("\n1 - View Balance \t 2 - Withdraw \t 3 - Deposit \t 4 - Exit ")
-
+                try:
                 # Reading selection
-                selection = int(input("\nEnter your selection: "))
+                    selection = int(input("\nEnter your selection: "))
+                except ValueError:
+                    print("Please enter an Integer Value.")
+                    continue
 
                 # Getting account object
                 for acc in accounts:
